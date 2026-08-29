@@ -1,0 +1,33 @@
+services:
+  ursim:
+    image: ursim:5.26.0
+    hostname: ursim
+    build:
+      context: .
+      args:
+        URSIM_VERSION: 5.26.0.140464
+        URSIM_URL: https://s3-eu-west-1.amazonaws.com/ur-support-site/282890/URSim_Linux-5.26.0.140464.tar.gz
+        URSIM_SHA256: e0b49a3dd3bd8d2bff3849ac524f69562716eb9118073a960a6bae5a83e94671
+    ipc: host
+    gpus: all
+    networks:
+      ursim_net:
+        ipv4_address: 192.168.56.101
+    environment:
+      DISPLAY: ${DISPLAY:?DISPLAY is required}
+      XAUTHORITY: /tmp/.docker.xauth
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: graphics,display,utility
+      __NV_PRIME_RENDER_OFFLOAD: "1"
+      __GLX_VENDOR_LIBRARY_NAME: nvidia
+      __VK_LAYER_NV_optimus: NVIDIA_only
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:?XAUTHORITY is required}:/tmp/.docker.xauth:ro
+    command: ${ROBOT_TYPE:-UR5}
+    stop_grace_period: 10s
+
+networks:
+  ursim_net:
+    name: ursim_net
+    external: true

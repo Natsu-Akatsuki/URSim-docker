@@ -1,0 +1,6 @@
+.git
+.gitignore
+*.tar
+*.tar.gz
+*.log
+README.md
